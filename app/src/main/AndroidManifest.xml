@@ -22,6 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:authorities="io.github.emrys919.movies"
+            android:name=".data.MovieProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -1,17 +1,17 @@
 package io.github.emrys919.movies.adapter;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.emrys919.movies.R;
-import io.github.emrys919.movies.model.Movie;
+import io.github.emrys919.movies.util.Constants;
 
 /**
  * Created by myo on 5/2/17.
@@ -19,10 +19,11 @@ import io.github.emrys919.movies.model.Movie;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private List<Movie> movieList;
+    private Cursor mCursor;
+    private Context mContext;
 
-    public MovieAdapter(List<Movie> movieList) {
-        this.movieList = movieList;
+    public MovieAdapter(Context mContext) {
+        this.mContext = mContext;
     }
 
     @Override
@@ -34,15 +35,30 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-        holder.movieTitle.setText(movieList.get(position).getTitle());
-        holder.data.setText(movieList.get(position).getReleaseDate());
-        holder.movieDescription.setText(movieList.get(position).getOverview());
-        holder.rating.setText(String.valueOf(movieList.get(position).getVoteAverage()));
+        mCursor.moveToPosition(position);
+
+        String movieTitle = mCursor.getString(Constants.INDEX_TITLE);
+        holder.movieTitle.setText(movieTitle);
+
+        String releaseDate = mCursor.getString(Constants.INDEX_RELEASE_DATE);
+        holder.data.setText(releaseDate);
+
+        String overview = mCursor.getString(Constants.INDEX_OVERVIEW);
+        holder.movieDescription.setText(overview);
+
+        String rating = mCursor.getString(Constants.INDEX_RATING);
+        holder.rating.setText(rating);
     }
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        if (mCursor == null) return 0;
+        return mCursor.getCount();
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        mCursor = newCursor;
+        notifyDataSetChanged();
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
