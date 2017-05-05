@@ -6,12 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.emrys919.movies.R;
 import io.github.emrys919.movies.util.Constants;
+import io.github.emrys919.movies.util.MovieDbUtils;
 
 /**
  * Created by myo on 5/2/17.
@@ -37,17 +41,30 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
+        String movieCoverPath = mCursor.getString(Constants.INDEX_MOVIE_POSTER_PATH);
+        Picasso.with(mContext).load(Constants.IMG_BASE_URL + movieCoverPath).into(holder.movieCover);
+        /*Glide.with(mContext)
+                .load(Constants.IMG_BASE_URL + movieCoverPath)
+                .thumbnail(0.5f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.movieCover);*/
+
         String movieTitle = mCursor.getString(Constants.INDEX_TITLE);
         holder.movieTitle.setText(movieTitle);
 
-        String releaseDate = mCursor.getString(Constants.INDEX_RELEASE_DATE);
-        holder.data.setText(releaseDate);
+        String movieGenre = mCursor.getString(Constants.INDEX_GENRE);
+        String genreString = MovieDbUtils.getMovieGenre(mContext, movieGenre);
+        holder.movieGenre.setText(genreString);
 
-        String overview = mCursor.getString(Constants.INDEX_OVERVIEW);
-        holder.movieDescription.setText(overview);
+        String movieOverview = mCursor.getString(Constants.INDEX_OVERVIEW);
+        holder.movieOverview.setText(movieOverview);
 
-        String rating = mCursor.getString(Constants.INDEX_RATING);
-        holder.rating.setText(rating);
+        String movieRating = mCursor.getString(Constants.INDEX_RATING);
+        holder.movieRating.setText(movieRating);
+
+        String movieReleaseDate = mCursor.getString(Constants.INDEX_MOVIE_DATE);
+        holder.movieReleaseDate.setText(movieReleaseDate);
     }
 
     @Override
@@ -63,10 +80,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.title) TextView movieTitle;
-        @BindView(R.id.subtitle) TextView data;
-        @BindView(R.id.description) TextView movieDescription;
-        @BindView(R.id.rating) TextView rating;
+        @BindView(R.id.movie_cover) ImageView movieCover;
+        @BindView(R.id.movie_title) TextView movieTitle;
+        @BindView(R.id.movie_genre) TextView movieGenre;
+        @BindView(R.id.movie_overview) TextView movieOverview;
+        @BindView(R.id.movie_rating) TextView movieRating;
+        @BindView(R.id.movie_release_date) TextView movieReleaseDate;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
