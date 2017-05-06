@@ -15,6 +15,8 @@ public class Constants {
     public static final String API_KEY = "4d74ac9c6ddf771e77f46ab810c373bf";
 
     public static final int ID_MAIN_LOADER = 10;
+    public static final int ID_MOVIE_PENDING_INTENT = 30;
+    public static final int ID_MOVIE_NOTI = 50;
 
     public static final String[] MOVIE_PROJECTION =  {
             MovieContract.MovieEntry.COLUMN_MOVIE_ORIGINAL_TITLE,

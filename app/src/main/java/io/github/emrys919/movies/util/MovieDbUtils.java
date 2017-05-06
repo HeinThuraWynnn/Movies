@@ -1,14 +1,63 @@
 package io.github.emrys919.movies.util;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import java.util.List;
 
 import io.github.emrys919.movies.R;
+import io.github.emrys919.movies.data.MovieContract.MovieEntry;
+import io.github.emrys919.movies.model.Movie;
 
 /**
  * Created by emrys on 5/5/17.
  */
 
 public class MovieDbUtils {
+
+    public static void saveLastNotiTime(Context context, long timeOfNotification) {
+        SharedPreferences sharePref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharePref.edit();
+        String lastNotiKey = context.getString(R.string.pref_last_notification_time);
+        editor.putLong(lastNotiKey, timeOfNotification);
+        editor.apply();
+    }
+
+    public static long getTimePeriodFromLastNoti(Context context) {
+        String lastNotiKey = context.getString(R.string.pref_last_notification_time);
+        long lastNotiTime = PreferenceManager
+                .getDefaultSharedPreferences(context).getLong(lastNotiKey, 0);
+        return System.currentTimeMillis() - lastNotiTime;
+    }
+
+    public static ContentValues[] getMovieContentValues(List<Movie> movieList) {
+        int size = movieList.size();
+        ContentValues[] movieValues = new ContentValues[size];
+
+        for (int i = 0; i < size; i++) {
+            Movie movie = movieList.get(i);
+            ContentValues values = new ContentValues();
+            values.put(MovieEntry._ID, movie.getId());
+            values.put(MovieEntry.COLUMN_MOVIE_BACKDROP_PATH, movie.getBackdropPath());
+            values.put(MovieEntry.COLUMN_MOVIE_GENRE_IDS, movie.getGenreIds().toString());
+            values.put(MovieEntry.COLUMN_MOVIE_LANGUAGES, movie.getOriginalLanguage());
+            values.put(MovieEntry.COLUMN_MOVIE_ORIGINAL_TITLE, movie.getOriginalTitle());
+            values.put(MovieEntry.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
+            values.put(MovieEntry.COLUMN_MOVIE_POPULARTY, movie.getPopularity() + "");
+            values.put(MovieEntry.COLUMN_MOVIE_POSTER_PATH, movie.getPosterPath());
+            values.put(MovieEntry.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
+            values.put(MovieEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
+            values.put(MovieEntry.COLUMN_MOVIE_VIDEO, movie.getVideo());
+            values.put(MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE, movie.getVoteAverage() + "");
+            values.put(MovieEntry.COLUMN_MOVIE_VOTE_COUNT, movie.getVoteCount() + "");
+
+            movieValues[i] = values;
+        }
+
+        return movieValues;
+    }
 
     public static String getMovieGenre(Context context, String movieGenre) {
         String[] splittedGenre = movieGenre.substring(1, movieGenre.length() -1).split(", ");
