@@ -78,6 +78,19 @@ public class MovieProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
+            case CODE_MOVIE_WITH_COLUMN:
+                String movieId = uri.getLastPathSegment();
+                String[] selectionArguments = new String[]{movieId};
+                cursor = movieDbHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntry.TABLE_NAME,
+                        projection,
+                        MovieContract.MovieEntry._ID + " =? ",
+                        selectionArguments,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
             default:
                 Log.e("Emrys", "Unknown Uri " + uri);
         }

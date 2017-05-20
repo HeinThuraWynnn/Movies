@@ -24,10 +24,10 @@ import static com.bumptech.glide.gifdecoder.GifHeaderParser.TAG;
 
 public class MovieSyncTask {
 
-    synchronized public static void syncMovie(final Context context) {
+    synchronized public static void syncMovie(final Context context, int page) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MoviesResponse> call = apiService.getTopRatedMovies(Constants.API_KEY);
+        Call<MoviesResponse> call = apiService.getPopularMovies(Constants.API_KEY, page);
         call.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
@@ -44,11 +44,11 @@ public class MovieSyncTask {
 
                         if (movieValues.length != 0) {
                             ContentResolver resolver = context.getContentResolver();
-                            resolver.delete(
+                            /*resolver.delete(
                                     MovieEntry.MOVIE_CONTENT_URI,
                                     null,
                                     null
-                            );
+                            );*/
 
                             resolver.bulkInsert(
                                     MovieEntry.MOVIE_CONTENT_URI,
@@ -66,9 +66,9 @@ public class MovieSyncTask {
             }
         });
 
-        long ellapsedTime = MovieDbUtils.getTimePeriodFromLastNoti(context);
+        long ellipseTime = MovieNotiUtils.getTimePeriodFromLastNoti(context);
 
-        if (ellapsedTime >= DateUtils.DAY_IN_MILLIS ) {
+        if (ellipseTime >= DateUtils.DAY_IN_MILLIS ) {
             MovieNotiUtils.notifyMovie(context);
         }
     }

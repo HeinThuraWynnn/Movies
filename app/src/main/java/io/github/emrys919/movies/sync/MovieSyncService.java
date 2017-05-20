@@ -4,10 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-/**
- * Created by emrys on 5/6/17.
- */
-
 public class MovieSyncService extends IntentService {
 
     public MovieSyncService() {
@@ -16,6 +12,6 @@ public class MovieSyncService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        MovieSyncTask.syncMovie(this);
+        MovieSyncTask.syncMovie(this, 1);
     }
 }

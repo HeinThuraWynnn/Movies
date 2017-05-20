@@ -24,20 +24,25 @@
         </activity>
 
         <provider
-            android:authorities="io.github.emrys919.movies"
             android:name=".data.MovieProvider"
+            android:authorities="io.github.emrys919.movies"
             android:exported="false" />
 
-        <service android:name=".sync.MovieSyncService"
+        <service
+            android:name=".sync.MovieSyncService"
             android:exported="false" />
-
-        <service android:name=".sync.MovieJobService"
+        <service
+            android:name=".sync.MovieJobService"
             android:exported="false">
             <intent-filter>
-                <action
-                    android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".activity.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

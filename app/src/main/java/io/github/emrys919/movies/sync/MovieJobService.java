@@ -1,7 +1,6 @@
 package io.github.emrys919.movies.sync;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
@@ -13,13 +12,10 @@ public class MovieJobService extends JobService {
 
     @Override
     public boolean onStartJob(final JobParameters job) {
-
-        Toast.makeText(this, "Job service started.", Toast.LENGTH_LONG).show();
-
         mFetchMovieTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                MovieSyncTask.syncMovie(getApplicationContext());
+                MovieSyncTask.syncMovie(getApplicationContext(), 1);
                 return null;
             }
 

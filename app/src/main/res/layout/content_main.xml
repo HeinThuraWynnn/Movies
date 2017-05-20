@@ -9,9 +9,13 @@
     tools:context="io.github.emrys919.movies.activity.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <android.support.v7.widget.RecyclerView
+    <com.malinskiy.superrecyclerview.SuperRecyclerView
         android:id="@+id/rc_movie"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="wrap_content"
+        app:layout_empty="@layout/emptyview"
+        app:layout_moreProgress="@layout/view_more_progress"
+        app:mainLayoutId="@layout/layout_recyclerview_verticalscroll"
+        app:recyclerClipToPadding="false"
+        app:scrollbarStyle="insideInset"/>
 </FrameLayout>

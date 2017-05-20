@@ -1,8 +1,6 @@
 package io.github.emrys919.movies.sync;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
@@ -12,16 +10,10 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 
-import java.util.concurrent.TimeUnit;
-
-import io.github.emrys919.movies.data.MovieContract;
-import io.github.emrys919.movies.util.Constants;
+import static io.github.emrys919.movies.util.Constants.SYNC_FLEXTIME_SEC;
+import static io.github.emrys919.movies.util.Constants.SYNC_INTERVAL_SEC;
 
 public class MovieSyncUtils {
-
-    private static final int SYNC_INTERVAL_MIN = 2;
-    private static final int SYNC_INTERVAL_SEC = (int) TimeUnit.MINUTES.toSeconds(SYNC_INTERVAL_MIN);
-    private static final int SYNC_FLEXTIME_SEC = SYNC_INTERVAL_SEC / 2;
     private static boolean sInitialized;
 
     private static void scheduleMovieSync(Context context) {
@@ -34,7 +26,8 @@ public class MovieSyncUtils {
                 .setConstraints(Constraint.ON_ANY_NETWORK)
                 .setLifetime(Lifetime.FOREVER)
                 .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(30, 60))
+                .setTrigger(Trigger.executionWindow(
+                        SYNC_INTERVAL_SEC, SYNC_INTERVAL_SEC + SYNC_FLEXTIME_SEC))
                 .setReplaceCurrent(true)
                 .build();
 
@@ -45,30 +38,12 @@ public class MovieSyncUtils {
         if (sInitialized) {
             return;
         }
-
-        scheduleMovieSync(context);
-
-        Thread checkForEmpty = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Uri movieQueryUri = MovieContract.MovieEntry.MOVIE_CONTENT_URI;
-                Cursor cursor = context.getContentResolver().query(
-                        movieQueryUri,
-                        Constants.MOVIE_PROJECTION,
-                        null,
-                        null,
-                        null);
-                if (null == cursor || cursor.getCount() == 0) {
-                    startSync(context);
-                }
-                cursor.close();
-            }
-        });
-        checkForEmpty.start();
+        //scheduleMovieSync(context);
+        startSync(context);
         sInitialized = true;
     }
 
-    public static void startSync(Context context) {
-        MovieSyncTask.syncMovie(context);
+    private static void startSync(Context context) {
+
     }
 }

@@ -2,8 +2,7 @@ package io.github.emrys919.movies.util;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.net.Uri;
 
 import java.util.List;
 
@@ -11,25 +10,14 @@ import io.github.emrys919.movies.R;
 import io.github.emrys919.movies.data.MovieContract.MovieEntry;
 import io.github.emrys919.movies.model.Movie;
 
-/**
- * Created by emrys on 5/5/17.
- */
+import static io.github.emrys919.movies.data.MovieContract.MovieEntry.MOVIE_CONTENT_URI;
 
 public class MovieDbUtils {
 
-    public static void saveLastNotiTime(Context context, long timeOfNotification) {
-        SharedPreferences sharePref = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sharePref.edit();
-        String lastNotiKey = context.getString(R.string.pref_last_notification_time);
-        editor.putLong(lastNotiKey, timeOfNotification);
-        editor.apply();
-    }
-
-    public static long getTimePeriodFromLastNoti(Context context) {
-        String lastNotiKey = context.getString(R.string.pref_last_notification_time);
-        long lastNotiTime = PreferenceManager
-                .getDefaultSharedPreferences(context).getLong(lastNotiKey, 0);
-        return System.currentTimeMillis() - lastNotiTime;
+    public static Uri buildWeatherUriWithDate(String movieId) {
+        return MOVIE_CONTENT_URI.buildUpon()
+                .appendPath(movieId)
+                .build();
     }
 
     public static ContentValues[] getMovieContentValues(List<Movie> movieList) {

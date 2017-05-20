@@ -5,10 +5,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -22,9 +24,9 @@ public class MovieNotiUtils {
     public static void notifyMovie(Context context) {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                 .setColor(ContextCompat.getColor(context, R.color.primary))
-                .setSmallIcon(R.drawable.ic_movie)
+                .setSmallIcon(R.drawable.ic_stat_autorenew)
                 .setLargeIcon(largeIcon(context))
-                .setContentTitle("")
+                .setContentTitle("Movie list updated!")
                 .setContentText("Click to show movie lists.")
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentIntent(contentIntent(context))
@@ -38,13 +40,27 @@ public class MovieNotiUtils {
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(Constants.ID_MOVIE_NOTI, notificationBuilder.build());
 
-        MovieDbUtils.saveLastNotiTime(context, System.currentTimeMillis());
+        saveLastNotiTime(context, System.currentTimeMillis());
+    }
+
+    public static long getTimePeriodFromLastNoti(Context context) {
+        String lastNotiKey = context.getString(R.string.pref_last_notification_time);
+        long lastNotiTime = PreferenceManager
+                .getDefaultSharedPreferences(context).getLong(lastNotiKey, 0);
+        return System.currentTimeMillis() - lastNotiTime;
+    }
+
+    private static void saveLastNotiTime(Context context, long timeOfNotification) {
+        SharedPreferences sharePref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharePref.edit();
+        String lastNotiKey = context.getString(R.string.pref_last_notification_time);
+        editor.putLong(lastNotiKey, timeOfNotification);
+        editor.apply();
     }
 
     private static Bitmap largeIcon(Context context) {
         Resources res = context.getResources();
-        Bitmap largeIcon = BitmapFactory.decodeResource(res, R.drawable.ic_movie);
-        return largeIcon;
+        return BitmapFactory.decodeResource(res, R.drawable.ic_movie);
     }
 
     private static PendingIntent contentIntent(Context context) {

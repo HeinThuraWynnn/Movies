@@ -17,17 +17,20 @@ import io.github.emrys919.movies.R;
 import io.github.emrys919.movies.util.Constants;
 import io.github.emrys919.movies.util.MovieDbUtils;
 
-/**
- * Created by myo on 5/2/17.
- */
-
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private Cursor mCursor;
     private Context mContext;
 
-    public MovieAdapter(Context mContext) {
+    private MovieOnClickHandler mClickhandler;
+
+    public interface MovieOnClickHandler {
+        void onClick(String name);
+    }
+
+    public MovieAdapter(Context mContext, MovieOnClickHandler mClickhandler) {
         this.mContext = mContext;
+        this.mClickhandler = mClickhandler;
     }
 
     @Override
@@ -78,7 +81,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
 
         @BindView(R.id.movie_cover) ImageView movieCover;
         @BindView(R.id.movie_title) TextView movieTitle;
@@ -90,6 +94,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public MovieViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mCursor.moveToPosition(getAdapterPosition());
+            String movieUri = mCursor.getString(Constants.INDEX_MOVIE_ID);
+            mClickhandler.onClick(movieUri);
         }
     }
 }
